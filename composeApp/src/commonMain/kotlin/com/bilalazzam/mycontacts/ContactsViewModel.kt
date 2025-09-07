@@ -10,7 +10,10 @@ import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionsController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ContactsViewModel(
     private val contactsProvider: ContactsProvider,
@@ -23,8 +26,52 @@ class ContactsViewModel(
     var contacts by mutableStateOf<List<Contact>>(emptyList())
         private set
 
+    var isLoading by mutableStateOf(false)
+        private set
+
+    private var denyCount = 0
+
     init {
         refreshPermissionState()
+    }
+
+    fun getAllContacts() {
+        viewModelScope.launch {
+            isLoading = true
+            try {
+                val allContacts = withContext(Dispatchers.IO) {
+                    contactsProvider.getAllContacts()
+                }
+                contacts = allContacts
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun requestContactsPermission() {
+        viewModelScope.launch {
+            try {
+                controller.providePermission(Permission.CONTACTS)
+                permissionState = PermissionState.Granted
+                getAllContacts()
+            } catch (e: DeniedAlwaysException) {
+                println("TAG, requestContactsPermission: DeniedAlwaysException")
+                permissionState = PermissionState.DeniedAlways
+            } catch (e: DeniedException) {
+                denyCount++
+                println("TAG, requestContactsPermission: Denied ($denyCount times)")
+                permissionState = if (denyCount > 3) {
+                    PermissionState.DeniedAlways
+                } else {
+                    PermissionState.Denied
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun refreshPermissionState() {
@@ -35,32 +82,6 @@ class ContactsViewModel(
 
             if (permissionState == PermissionState.Granted) {
                 getAllContacts()
-            } else {
-                provideOrRequestContactsAccessPermission()
-            }
-        }
-    }
-
-    fun getAllContacts() {
-        viewModelScope.launch {
-            contacts = contactsProvider.getAllContacts()
-            println("TAG , contacts: $contacts")
-        }
-    }
-
-    private fun provideOrRequestContactsAccessPermission() {
-        viewModelScope.launch {
-            try {
-                controller.providePermission(Permission.CONTACTS)
-                permissionState = PermissionState.Granted
-            } catch (e: DeniedAlwaysException) {
-                println("TAG, provideOrRequestContactsAccessPermission: DeniedAlwaysException")
-            } catch (e: DeniedException) {
-                println("TAG, provideOrRequestContactsAccessPermission: DeniedException")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                refreshPermissionState()
             }
         }
     }

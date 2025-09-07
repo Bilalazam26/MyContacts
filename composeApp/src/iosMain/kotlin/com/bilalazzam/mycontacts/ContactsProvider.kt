@@ -19,6 +19,7 @@ actual class ContactsProvider {
         val contacts = mutableListOf<Contact>()
 
         store.enumerateContactsWithFetchRequest(request, error = null) { cnContact, _ ->
+
             val name = "${cnContact?.givenName} ${cnContact?.familyName}".trim()
             val numbers = cnContact?.getPhoneNumbers() ?: emptyList()
             contacts.add(Contact(cnContact?.identifier, name, numbers))
@@ -28,8 +29,8 @@ actual class ContactsProvider {
     }
 
     private fun CNContact.getPhoneNumbers(): List<String> {
-        return phoneNumbers.mapNotNull { lv ->
-            (lv as? CNLabeledValue)?.value.let { it as? CNPhoneNumber }?.stringValue
+        return phoneNumbers.mapNotNull { labeledValue ->
+            (labeledValue as? CNLabeledValue)?.value.let { it as? CNPhoneNumber }?.stringValue
         }
     }
 }
