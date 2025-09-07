@@ -2,9 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<key>NSContactsUsageDescription</key>
-	<string>We need access to your contacts.</string>
-	<true/>
+    <!-- Optimize rendering performance -->
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
+
+    <!-- Required for contacts permission -->
+    <key>NSContactsUsageDescription</key>
+    <string>We need access to your contacts.</string>
 </dict>
 </plist>

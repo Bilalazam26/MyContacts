@@ -24,7 +24,7 @@ class ContactsViewModel(
         private set
 
     init {
-        getAllContacts()
+        refreshPermissionState()
     }
 
     private fun refreshPermissionState() {
