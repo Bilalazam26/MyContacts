@@ -53,13 +53,16 @@ actual class ContactsProvider(private val context: Context) {
                         }
                     }
                 }
+
+                val avatar = if (photoUri != null) ContactAvatar.AvatarUri(photoUri) else ContactAvatar.None
+
                 contacts.add(
                     Contact(
                         id = id,
                         firstName = firstName,
                         lastName = lastName,
                         phoneNumbers = phoneNumbers,
-                        imageUri = photoUri
+                        avatar = avatar
                     )
                 )
             }

@@ -1,5 +1,6 @@
 package com.bilalazzam.mycontacts
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -21,7 +22,7 @@ import coil3.compose.AsyncImage
 
 @Composable
 fun Avatar(
-    imageUri: String?,
+    avatar: ContactAvatar,
     initials: String,
     size: Int,
     modifier: Modifier = Modifier
@@ -31,7 +32,7 @@ fun Avatar(
             .size(size.dp)
             .clip(CircleShape)
             .background(
-                if (imageUri != null) {
+                if (avatar != ContactAvatar.None) {
                     MaterialTheme.colorScheme.primaryContainer
                 } else {
                     generateColorFromString(initials)
@@ -44,20 +45,29 @@ fun Avatar(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (imageUri != null) {
-            AsyncImage(
-                model = imageUri,
-                contentDescription = "Contact photo",
-                modifier = modifier
-            )
-        } else {
-            Text(
-                text = initials,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontSize = (size * 0.4).sp,
-                fontWeight = FontWeight.Bold
-            )
+        when(avatar) {
+            is ContactAvatar.AvatarBitmap -> {
+                Image(
+                    bitmap = avatar.bitmap,
+                    contentDescription = "Contact photo"
+                )
+            }
+            is ContactAvatar.AvatarUri -> {
+                AsyncImage(
+                    model = avatar.uri,
+                    contentDescription = "Contact photo"
+                )
+            }
+            ContactAvatar.None -> {
+                Text(
+                    text = initials,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontSize = (size * 0.4).sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
+
     }
 }
 
