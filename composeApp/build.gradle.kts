@@ -31,7 +31,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(project(":contacts-provider"))
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -46,6 +46,7 @@ kotlin {
             api(libs.moko.permissions.compose)
 
             implementation(libs.coil.compose)
+            implementation(libs.contacts.provider)
 
         }
         commonTest.dependencies {
