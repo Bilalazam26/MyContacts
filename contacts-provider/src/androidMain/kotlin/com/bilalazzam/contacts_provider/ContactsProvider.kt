@@ -1,8 +1,8 @@
-package com.bilalazzam.mycontacts
-
+package com.bilalazzam.contacts_provider
 
 import android.content.Context
 import android.provider.ContactsContract
+
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class ContactsProvider(private val context: Context) {

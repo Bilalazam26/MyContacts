@@ -1,4 +1,4 @@
-package com.bilalazzam.mycontacts
+package com.bilalazzam.contacts_provider
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap

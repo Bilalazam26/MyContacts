@@ -16,8 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.math.abs
 import coil3.compose.AsyncImage
+import com.bilalazzam.contacts_provider.ContactAvatar
+import kotlin.math.abs
 
 
 @Composable
@@ -45,19 +46,21 @@ fun Avatar(
             ),
         contentAlignment = Alignment.Center
     ) {
-        when(avatar) {
+        when (avatar) {
             is ContactAvatar.AvatarBitmap -> {
                 Image(
                     bitmap = avatar.bitmap,
                     contentDescription = "Contact photo"
                 )
             }
+
             is ContactAvatar.AvatarUri -> {
                 AsyncImage(
                     model = avatar.uri,
                     contentDescription = "Contact photo"
                 )
             }
+
             ContactAvatar.None -> {
                 Text(
                     text = initials,
@@ -85,7 +88,7 @@ private fun generateColorFromString(input: String): Color {
         Color(0xFF4FC3F7), // Light Blue
         Color(0xFFAED581), // Light Green
     )
-    
+
     val hash = input.hashCode()
     return colors[abs(hash) % colors.size]
 }

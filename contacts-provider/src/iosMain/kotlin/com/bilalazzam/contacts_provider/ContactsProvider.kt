@@ -1,4 +1,4 @@
-package com.bilalazzam.mycontacts
+package com.bilalazzam.contacts_provider
 
 
 import kotlinx.cinterop.ExperimentalForeignApi
