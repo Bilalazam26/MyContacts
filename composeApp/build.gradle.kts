@@ -14,7 +14,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -24,7 +24,7 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -43,6 +43,9 @@ kotlin {
             implementation(libs.lifecycle.viewmodel)
             api(libs.moko.permissions)
             api(libs.moko.permissions.compose)
+
+            implementation(libs.coil.compose)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

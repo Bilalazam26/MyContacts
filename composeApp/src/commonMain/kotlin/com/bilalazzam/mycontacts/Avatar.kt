@@ -3,7 +3,6 @@ package com.bilalazzam.mycontacts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -16,13 +15,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.abs
+import coil3.compose.AsyncImage
+
 
 @Composable
 fun Avatar(
     imageUri: String?,
     initials: String,
-    modifier: Modifier = Modifier,
-    size: Int = 48
+    size: Int,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
@@ -43,11 +45,10 @@ fun Avatar(
         contentAlignment = Alignment.Center
     ) {
         if (imageUri != null) {
-            Text(
-                text = initials,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontSize = (size * 0.4).sp,
-                fontWeight = FontWeight.Bold
+            AsyncImage(
+                model = imageUri,
+                contentDescription = "Contact photo",
+                modifier = modifier
             )
         } else {
             Text(
@@ -59,6 +60,7 @@ fun Avatar(
         }
     }
 }
+
 
 private fun generateColorFromString(input: String): Color {
     val colors = listOf(
@@ -75,5 +77,5 @@ private fun generateColorFromString(input: String): Color {
     )
     
     val hash = input.hashCode()
-    return colors[kotlin.math.abs(hash) % colors.size]
+    return colors[abs(hash) % colors.size]
 }

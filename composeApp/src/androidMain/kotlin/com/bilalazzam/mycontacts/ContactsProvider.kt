@@ -25,8 +25,11 @@ actual class ContactsProvider(private val context: Context) {
         cursor?.use {
             while (it.moveToNext()) {
                 val id = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                val displayName = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)) ?: ""
-                val photoUri = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))
+                val displayName =
+                    it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
+                        ?: ""
+                val photoUri =
+                    it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))
 
                 val nameParts = displayName.trim().split("\\s+".toRegex())
                 val firstName = nameParts.firstOrNull() ?: ""
@@ -50,7 +53,15 @@ actual class ContactsProvider(private val context: Context) {
                         }
                     }
                 }
-                contacts.add(Contact(id, firstName, lastName, phoneNumbers, photoUri))
+                contacts.add(
+                    Contact(
+                        id = id,
+                        firstName = firstName,
+                        lastName = lastName,
+                        phoneNumbers = phoneNumbers,
+                        imageUri = photoUri
+                    )
+                )
             }
         }
         return contacts
