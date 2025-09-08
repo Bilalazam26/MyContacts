@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     id("maven-publish")
 }
+group = "com.github.dev-bilal-azzam"
+version = "1.0"
 
 kotlin {
 
@@ -80,14 +82,10 @@ kotlin {
 
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            withType<MavenPublication> {
-                groupId = "com.github.dev-bilal-azzam"
-                artifactId = "contacts-provider"
-                version = "1.0"
-            }
-        }
+publishing {
+    publications.withType<MavenPublication> {
+        groupId = "com.github.dev-bilal-azzam"
+        artifactId = "contacts-provider"
+        version = "1.0"
     }
 }
