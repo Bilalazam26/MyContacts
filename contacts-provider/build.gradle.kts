@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -79,4 +78,16 @@ kotlin {
         }
     }
 
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            withType<MavenPublication> {
+                groupId = "com.github.dev-bilal-azzam"
+                artifactId = "contacts-provider"
+                version = "1.0"
+            }
+        }
+    }
 }
