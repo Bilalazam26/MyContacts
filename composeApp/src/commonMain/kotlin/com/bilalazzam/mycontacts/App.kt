@@ -70,14 +70,25 @@ fun App(contactsProvider: ContactsProvider) {
                             )
                         }
                     } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            items(contacts) { contact ->
-                                ContactItem(contact)
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Button(
+                                onClick = { viewModel.getAllContacts() },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            ) {
+                                Text("Re-Sync Contacts")
+                            }
+
+                            LazyColumn(
+                                modifier = Modifier.weight(1f),
+                                contentPadding = PaddingValues(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                items(contacts) { contact ->
+                                    ContactItem(contact)
+                                }
                             }
                         }
                     }

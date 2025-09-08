@@ -17,8 +17,10 @@ moko = "0.18.0"
 kotlinStdlib = "2.2.10"
 runner = "1.5.2"
 core = "1.5.0"
+workRuntimeKtx = "2.10.3"
 
 [libraries]
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }

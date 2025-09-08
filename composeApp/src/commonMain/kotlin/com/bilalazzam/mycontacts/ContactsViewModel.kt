@@ -57,7 +57,6 @@ class ContactsViewModel(
                 }
                 contacts = allContacts.filter { it.hasPhoneNumbers }
             } catch (e: Exception) {
-                e.printStackTrace()
             } finally {
                 isLoading = false
             }
@@ -80,8 +79,9 @@ class ContactsViewModel(
                     PermissionState.Denied
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
     }
+
+
 }
