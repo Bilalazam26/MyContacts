@@ -2,7 +2,7 @@ jdk:
   - openjdk17
 
 install:
-  - ./gradlew clean assemble publishToMavenLocal -x test
+  - ./gradlew :contacts-provider:publishToMavenLocal -Pversion=1.0 -xlint -xtest
 
 script:
   - ./gradlew :contacts-provider:publish
