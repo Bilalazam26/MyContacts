@@ -10,15 +10,30 @@ actual class ContactsProvider(private val context: Context) {
         val contacts = mutableListOf<Contact>()
         val resolver = context.contentResolver
 
+        val projection = arrayOf(
+            ContactsContract.Contacts._ID,
+            ContactsContract.Contacts.DISPLAY_NAME,
+            ContactsContract.Contacts.PHOTO_URI,
+            ContactsContract.Contacts.HAS_PHONE_NUMBER
+        )
+
         val cursor = resolver.query(
             ContactsContract.Contacts.CONTENT_URI,
-            null, null, null, null
+            projection, null, null, null
         )
 
         cursor?.use {
             while (it.moveToNext()) {
                 val id = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                val name = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME)) ?: ""
+                val displayName =
+                    it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
+                        ?: ""
+                val photoUri =
+                    it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))
+
+                val nameParts = displayName.trim().split("\\s+".toRegex())
+                val firstName = nameParts.firstOrNull() ?: ""
+                val lastName = nameParts.drop(1).joinToString(" ")
 
                 val phoneNumbers = mutableListOf<String>()
                 if (it.getInt(it.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
@@ -38,7 +53,15 @@ actual class ContactsProvider(private val context: Context) {
                         }
                     }
                 }
-                contacts.add(Contact(id, name, phoneNumbers))
+                contacts.add(
+                    Contact(
+                        id = id,
+                        firstName = firstName,
+                        lastName = lastName,
+                        phoneNumbers = phoneNumbers,
+                        imageUri = photoUri
+                    )
+                )
             }
         }
         return contacts

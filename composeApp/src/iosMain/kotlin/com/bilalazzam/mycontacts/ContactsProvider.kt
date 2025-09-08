@@ -13,16 +13,17 @@ actual class ContactsProvider {
             CNContactIdentifierKey,
             CNContactGivenNameKey,
             CNContactFamilyNameKey,
-            CNContactPhoneNumbersKey
+            CNContactPhoneNumbersKey,
+            CNContactImageDataKey
         )
         val request = CNContactFetchRequest(keysToFetch = keysToFetch)
         val contacts = mutableListOf<Contact>()
 
         store.enumerateContactsWithFetchRequest(request, error = null) { cnContact, _ ->
-
-            val name = "${cnContact?.givenName} ${cnContact?.familyName}".trim()
+            val firstName = cnContact?.givenName ?: ""
+            val lastName = cnContact?.familyName ?: ""
             val numbers = cnContact?.getPhoneNumbers() ?: emptyList()
-            contacts.add(Contact(cnContact?.identifier, name, numbers))
+            contacts.add(Contact(cnContact?.identifier, firstName, lastName, numbers))
         }
 
         return contacts
