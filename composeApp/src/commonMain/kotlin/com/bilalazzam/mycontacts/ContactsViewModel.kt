@@ -32,7 +32,18 @@ class ContactsViewModel(
     private var denyCount = 0
 
     init {
-        refreshPermissionState()
+        checkAndLoadContacts()
+    }
+
+    private fun checkAndLoadContacts() {
+        viewModelScope.launch {
+            val currentPermissionState = controller.getPermissionState(Permission.CONTACTS)
+            permissionState = currentPermissionState
+
+            if (permissionState == PermissionState.Granted) {
+                getAllContacts()
+            }
+        }
     }
 
     fun getAllContacts() {
@@ -42,7 +53,7 @@ class ContactsViewModel(
                 val allContacts = withContext(Dispatchers.IO) {
                     contactsProvider.getAllContacts()
                 }
-                contacts = allContacts
+                contacts = allContacts.filter { it.hasPhoneNumbers }
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
@@ -58,11 +69,9 @@ class ContactsViewModel(
                 permissionState = PermissionState.Granted
                 getAllContacts()
             } catch (e: DeniedAlwaysException) {
-                println("TAG, requestContactsPermission: DeniedAlwaysException")
                 permissionState = PermissionState.DeniedAlways
             } catch (e: DeniedException) {
                 denyCount++
-                println("TAG, requestContactsPermission: Denied ($denyCount times)")
                 permissionState = if (denyCount > 3) {
                     PermissionState.DeniedAlways
                 } else {
@@ -70,18 +79,6 @@ class ContactsViewModel(
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-            }
-        }
-    }
-
-    private fun refreshPermissionState() {
-        viewModelScope.launch {
-            val current = controller.getPermissionState(Permission.CONTACTS)
-            println("TAG, refreshPermissionState: $current")
-            permissionState = current
-
-            if (permissionState == PermissionState.Granted) {
-                getAllContacts()
             }
         }
     }
