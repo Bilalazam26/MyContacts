@@ -23,8 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bilalazzam.mycontacts.ContactItem
-import com.bilalazzam.mycontacts.ContactsProvider
+import com.bilalazzam.contacts_provider.ContactsProvider
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
@@ -78,7 +77,7 @@ fun App(contactsProvider: ContactsProvider) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             items(contacts) { contact ->
-                                ContactItem(contact = contact)
+                                ContactItem(contact)
                             }
                         }
                     }

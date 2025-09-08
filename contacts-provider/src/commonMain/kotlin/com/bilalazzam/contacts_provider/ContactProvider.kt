@@ -1,4 +1,4 @@
-package com.bilalazzam.mycontacts
+package com.bilalazzam.contacts_provider
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 expect class ContactsProvider {

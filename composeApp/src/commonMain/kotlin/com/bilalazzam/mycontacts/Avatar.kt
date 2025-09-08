@@ -1,5 +1,6 @@
 package com.bilalazzam.mycontacts
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -15,13 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.math.abs
 import coil3.compose.AsyncImage
+import com.bilalazzam.contacts_provider.ContactAvatar
+import kotlin.math.abs
 
 
 @Composable
 fun Avatar(
-    imageUri: String?,
+    avatar: ContactAvatar,
     initials: String,
     size: Int,
     modifier: Modifier = Modifier
@@ -31,7 +33,7 @@ fun Avatar(
             .size(size.dp)
             .clip(CircleShape)
             .background(
-                if (imageUri != null) {
+                if (avatar != ContactAvatar.None) {
                     MaterialTheme.colorScheme.primaryContainer
                 } else {
                     generateColorFromString(initials)
@@ -44,20 +46,31 @@ fun Avatar(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (imageUri != null) {
-            AsyncImage(
-                model = imageUri,
-                contentDescription = "Contact photo",
-                modifier = modifier
-            )
-        } else {
-            Text(
-                text = initials,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                fontSize = (size * 0.4).sp,
-                fontWeight = FontWeight.Bold
-            )
+        when (avatar) {
+            is ContactAvatar.AvatarBitmap -> {
+                Image(
+                    bitmap = avatar.bitmap,
+                    contentDescription = "Contact photo"
+                )
+            }
+
+            is ContactAvatar.AvatarUri -> {
+                AsyncImage(
+                    model = avatar.uri,
+                    contentDescription = "Contact photo"
+                )
+            }
+
+            ContactAvatar.None -> {
+                Text(
+                    text = initials,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontSize = (size * 0.4).sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
+
     }
 }
 
@@ -75,7 +88,7 @@ private fun generateColorFromString(input: String): Color {
         Color(0xFF4FC3F7), // Light Blue
         Color(0xFFAED581), // Light Green
     )
-    
+
     val hash = input.hashCode()
     return colors[abs(hash) % colors.size]
 }

@@ -1,4 +1,6 @@
-package com.bilalazzam.mycontacts
+package com.bilalazzam.contacts_provider
+
+import androidx.compose.ui.graphics.ImageBitmap
 
 
 data class Contact(
@@ -6,7 +8,7 @@ data class Contact(
     val firstName: String?,
     val lastName: String?,
     val phoneNumbers: List<String>,
-    val imageUri: String? = null
+    val avatar: ContactAvatar = ContactAvatar.None
 ) {
     val displayName: String
         get() = when {
@@ -29,4 +31,11 @@ data class Contact(
 
     val hasPhoneNumbers: Boolean
         get() = phoneNumbers.isNotEmpty()
+}
+
+sealed class ContactAvatar {
+    data class AvatarUri(val uri: String): ContactAvatar()
+    data class AvatarBitmap(val bitmap: ImageBitmap): ContactAvatar()
+    data object None: ContactAvatar()
+
 }

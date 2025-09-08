@@ -1,8 +1,9 @@
-package com.bilalazzam.mycontacts
+package com.bilalazzam.contacts_provider
 
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Contacts.*
+import platform.UIKit.UIImage
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class ContactsProvider {
@@ -23,7 +24,21 @@ actual class ContactsProvider {
             val firstName = cnContact?.givenName ?: ""
             val lastName = cnContact?.familyName ?: ""
             val numbers = cnContact?.getPhoneNumbers() ?: emptyList()
-            contacts.add(Contact(cnContact?.identifier, firstName, lastName, numbers))
+            val imageData = cnContact?.imageData
+            val avatar = if (imageData != null)
+                ContactAvatar.AvatarBitmap(UIImage(data = imageData).toImageBitmap())
+            else
+                ContactAvatar.None
+
+            contacts.add(
+                Contact(
+                    id = cnContact?.identifier,
+                    firstName = firstName,
+                    lastName = lastName,
+                    phoneNumbers = numbers,
+                    avatar = avatar
+                )
+            )
         }
 
         return contacts
