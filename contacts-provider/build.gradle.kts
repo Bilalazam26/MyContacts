@@ -7,7 +7,7 @@ plugins {
     id("maven-publish")
 }
 group = "com.github.dev-bilal-azzam"
-version = "1.0"
+version = "1.2"
 
 kotlin {
 
@@ -83,9 +83,10 @@ kotlin {
 }
 
 publishing {
-    publications.withType<MavenPublication> {
-        groupId = "com.github.dev-bilal-azzam"
-        artifactId = "contacts-provider"
-        version = "1.0"
+    publications {
+        // For all KMP publications
+        withType<MavenPublication>().all {
+            artifactId = "contacts-provider"
+        }
     }
 }
