@@ -10,12 +10,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        
         val syncManager = AndroidContactsSyncManager(this)
         syncManager.enqueueSync()
+        
         setContent {
             App(
                 contactsProvider = ContactsProvider(this),
-                syncManager = AndroidContactsSyncManager(this)
+                syncManager = syncManager
             )
         }
     }

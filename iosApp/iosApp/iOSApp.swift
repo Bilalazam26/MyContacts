@@ -7,6 +7,7 @@ struct iOSApp: App {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.bilalazzam.mycontacts.contactsSync", using: nil) { task in
             self.handleContactsSync(task: task as! BGAppRefreshTask)
         }
+        
         scheduleAppRefresh()
     }
 
@@ -15,31 +16,34 @@ struct iOSApp: App {
             ContentView()
         }
     }
-
+    
     private func scheduleAppRefresh() {
         let request = BGAppRefreshTaskRequest(identifier: "com.bilalazzam.mycontacts.contactsSync")
         request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60)
+        
         do {
             try BGTaskScheduler.shared.submit(request)
+            print("iOS: Background task scheduled successfully")
         } catch {
-            print("Could not schedule app refresh: \(error)")
+            print("iOS: Could not schedule app refresh: \(error)")
         }
     }
 
     private func handleContactsSync(task: BGAppRefreshTask) {
-        scheduleAppRefresh()
-
+        print("iOS: Background sync task started")
+                scheduleAppRefresh()
+        
         let queue = OperationQueue()
         task.expirationHandler = {
+            print("iOS: Background task expired")
             queue.cancelAllOperations()
         }
 
         queue.addOperation {
-            print("Running iOS background contacts sync")
-        }
-
-        queue.addOperation {
-            task.setTaskCompleted(success: true)
+            print("iOS: Running background contacts sync")
+            
+            let syncManager = IOSContactsSyncManager()
+            syncManager.handleBackgroundSync(task: task)
         }
     }
 }
