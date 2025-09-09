@@ -31,7 +31,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App(contactsProvider: ContactsProvider) {
+fun App(contactsProvider: ContactsProvider,
+        syncManager: ContactsSyncManager) {
     MaterialTheme {
         val factory = rememberPermissionsControllerFactory()
         val controller = remember(factory) {
@@ -41,7 +42,7 @@ fun App(contactsProvider: ContactsProvider) {
         BindEffect(controller)
 
         val viewModel = viewModel {
-            ContactsViewModel(contactsProvider, controller)
+            ContactsViewModel(contactsProvider, controller, syncManager)
         }
 
         val contacts = viewModel.contacts
@@ -72,7 +73,8 @@ fun App(contactsProvider: ContactsProvider) {
                     } else {
                         Column(modifier = Modifier.fillMaxSize()) {
                             Button(
-                                onClick = { viewModel.getAllContacts() },
+                                onClick = { viewModel.reSyncContacts()
+                                          },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(16.dp)
