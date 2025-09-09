@@ -19,7 +19,9 @@ import kotlinx.coroutines.withContext
 
 class ContactsViewModel(
     private val contactsProvider: ContactsProvider,
-    private val controller: PermissionsController
+    private val controller: PermissionsController,
+    private val syncManager: ContactsSyncManager
+
 ) : ViewModel() {
 
     var permissionState by mutableStateOf(PermissionState.NotDetermined)
@@ -83,5 +85,10 @@ class ContactsViewModel(
         }
     }
 
-
+    fun reSyncContacts() {
+        viewModelScope.launch {
+            syncManager.enqueueSync()
+            getAllContacts()
+        }
+    }
 }
