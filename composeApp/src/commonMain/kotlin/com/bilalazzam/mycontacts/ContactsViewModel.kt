@@ -13,7 +13,6 @@ import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionsController
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -33,7 +32,15 @@ class ContactsViewModel(
     var isLoading by mutableStateOf(false)
         private set
 
+    var workManagerStatus by mutableStateOf(WorkManagerStatus())
+        private set
+
+    var cacheInfo by mutableStateOf("No cached data / لا توجد بيانات مخزنة")
+        private set
+
     private var denyCount = 0
+    private val contactsCache = ContactsCache()
+    private val workManagerTracker = WorkManagerStatusTracker()
 
     init {
         checkAndLoadContacts()
@@ -45,22 +52,44 @@ class ContactsViewModel(
             permissionState = currentPermissionState
 
             if (permissionState == PermissionState.Granted) {
+                // Check cache first
+                if (contactsCache.hasCachedContacts()) {
+                    val cachedContacts = contactsCache.getCachedContacts()
+                    if (cachedContacts != null) {
+                        contacts = cachedContacts.filter { it.hasPhoneNumbers }
+                        cacheInfo = contactsCache.getCacheInfo()
+                    }
+                }
                 getAllContacts()
             }
+            
+            // Update work manager status
+            workManagerStatus = workManagerTracker.getStatus()
         }
     }
 
     fun getAllContacts() {
         viewModelScope.launch {
             isLoading = true
+            workManagerTracker.markAsRunning()
+            workManagerStatus = workManagerTracker.getStatus()
+            
             try {
-                val allContacts = withContext(Dispatchers.IO) {
-                    contactsProvider.getAllContacts()
-                }
-                contacts = allContacts.filter { it.hasPhoneNumbers }
+                  val allContacts=  contactsProvider.getAllContacts()
+
+                val filteredContacts = allContacts.filter { it.hasPhoneNumbers }
+                contacts = filteredContacts
+                
+                // Save to cache
+                contactsCache.saveContacts(filteredContacts)
+                cacheInfo = contactsCache.getCacheInfo()
+                
+                workManagerTracker.markAsCompleted("success")
             } catch (e: Exception) {
+                workManagerTracker.markAsCompleted("failure")
             } finally {
                 isLoading = false
+                workManagerStatus = workManagerTracker.getStatus()
             }
         }
     }
@@ -87,7 +116,41 @@ class ContactsViewModel(
 
     fun reSyncContacts() {
         viewModelScope.launch {
+            workManagerTracker.markAsScheduled()
+            workManagerStatus = workManagerTracker.getStatus()
+            
             syncManager.enqueueSync()
+            getAllContacts()
+        }
+    }
+    
+    fun clearCache() {
+        contactsCache.clearCache()
+        cacheInfo = contactsCache.getCacheInfo()
+        contacts = emptyList()
+    }
+    
+    fun getWorkManagerDetailedInfo(): String {
+        return workManagerTracker.getStatus().getDetailedInfo()
+    }
+    
+    fun testWorkManager() {
+        viewModelScope.launch {
+            workManagerTracker.markAsScheduled()
+            workManagerStatus = workManagerTracker.getStatus()
+            
+            // Simulate work manager execution
+            workManagerTracker.markAsRunning()
+            workManagerStatus = workManagerTracker.getStatus()
+            
+            // Simulate some work
+            kotlinx.coroutines.delay(2000)
+            
+            // Complete the work
+            workManagerTracker.markAsCompleted("success")
+            workManagerStatus = workManagerTracker.getStatus()
+            
+            // Refresh contacts to show the work manager worked
             getAllContacts()
         }
     }
