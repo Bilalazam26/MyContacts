@@ -11,6 +11,7 @@ import platform.BackgroundTasks.BGTaskScheduler
 import platform.Foundation.NSDate
 import platform.Foundation.dateByAddingTimeInterval
 
+
 @OptIn(ExperimentalForeignApi::class)
 fun registerTask(contactsProvider: ContactsProvider) {
     BGTaskScheduler.sharedScheduler.registerForTaskWithIdentifier(
@@ -33,8 +34,8 @@ fun registerTask(contactsProvider: ContactsProvider) {
 }
 
 @OptIn(ExperimentalForeignApi::class)
-fun scheduleAppRefreshTask(earliestBeginDate: NSDate? = null) {
+fun scheduleAppRefreshTask() {
     val request = BGAppRefreshTaskRequest(identifier = "contacts_sync_task")
-    request.earliestBeginDate = earliestBeginDate ?: NSDate().dateByAddingTimeInterval((Constants.TASK_TIMER_SECONDS * 60).toDouble())
     BGTaskScheduler.sharedScheduler.submitTaskRequest(request, null)
 }
+
