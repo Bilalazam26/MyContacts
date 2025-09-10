@@ -6,6 +6,6 @@ import platform.Foundation.NSDate
 
 class iOSContactsSyncManager(private val contactsProvider: ContactsProvider) : ContactsSyncManager {
     override fun enqueueSync() {
-        scheduleAppRefreshTask()
+        registerTask(contactsProvider)
     }
 }

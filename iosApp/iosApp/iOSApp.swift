@@ -12,9 +12,10 @@ struct iOSApp: App {
     }
 
     class AppDelegate: NSObject, UIApplicationDelegate {
+        let task =iOSContactsSyncManager()
         func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 
-            mycontacts.registerTask()
+            task.registerTask()
 
             return true
         }
