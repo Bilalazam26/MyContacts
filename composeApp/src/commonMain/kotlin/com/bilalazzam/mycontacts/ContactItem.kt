@@ -22,7 +22,7 @@ import com.bilalazzam.contacts_provider.Contact
 
 @Composable
 fun ContactItem(
-    contact: Contact
+    contact: ContactsUiState
 ) {
     Card(
         modifier = Modifier
@@ -37,12 +37,12 @@ fun ContactItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Avatar(
+      /*      Avatar(
                 avatar = contact.avatar,
                 initials = contact.initials,
                 size = 48
             )
-
+*/
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(
@@ -50,7 +50,7 @@ fun ContactItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = contact.displayName,
+                    text = contact.name,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -58,7 +58,7 @@ fun ContactItem(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = contact.phoneNumbers.firstOrNull() ?: "No phone number",
+                    text = contact.phone,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

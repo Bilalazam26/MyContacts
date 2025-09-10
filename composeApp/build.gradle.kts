@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -46,6 +45,12 @@ kotlin {
             api(libs.moko.permissions.compose)
 
             implementation(libs.coil.compose)
+
+
+            // Paging 3
+            implementation(libs.bundles.paging)
+
+            implementation("io.github.aakira:napier:2.7.1")
 
         }
         commonTest.dependencies {

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.bilalazzam.contacts_provider.ContactsProvider
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.compose.BindEffect
@@ -39,14 +39,14 @@ fun App(contactsProvider: ContactsProvider) {
         }
 
         BindEffect(controller)
-
+        val repo = ContactsRepository(contactsProvider)
         val viewModel = viewModel {
-            ContactsViewModel(contactsProvider, controller)
+            ContactsViewModel(repo, controller)
         }
 
-        val contacts = viewModel.contacts
         val permissionState = viewModel.permissionState
         val isLoading = viewModel.isLoading
+        val contacts = viewModel.loadContacts().collectAsLazyPagingItems()
 
         when (permissionState) {
             PermissionState.Granted -> {
@@ -56,28 +56,37 @@ fun App(contactsProvider: ContactsProvider) {
                         .background(MaterialTheme.colorScheme.background)
                         .systemBarsPadding()
                 ) {
-                    if (isLoading) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LinearProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(3.dp)
-                            )
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(
+                            count = contacts.itemCount,
+                            key = { index: Int -> index },
+                            contentType = { _: Int -> "contact" }
+                        ) { index ->
+                            val contact = contacts[index]
+                            if (contact != null) {
+                                ContactItem(contact = contact)
+                            }
                         }
-                    } else {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            items(contacts) { contact ->
-                                ContactItem(contact)
+
+                        if (isLoading) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    LinearProgressIndicator(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(3.dp)
+                                    )
+                                }
                             }
                         }
                     }
