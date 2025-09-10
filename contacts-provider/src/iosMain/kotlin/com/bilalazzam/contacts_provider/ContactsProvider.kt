@@ -9,6 +9,8 @@ import platform.UIKit.UIImage
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class ContactsProvider {
+    private val contactsCache: ContactsCache = ContactsCache()
+
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
     actual suspend fun getAllContacts(): List<Contact> {
         val store = CNContactStore()
@@ -52,7 +54,14 @@ actual class ContactsProvider {
             )
         }
 
+        // Save contacts to cache after successful fetch
+        contactsCache.saveContacts(contacts)
+
         return contacts
+    }
+
+    actual fun getCachedContacts(): List<Contact> {
+        return contactsCache.getContacts()
     }
 
     private fun CNContact.getPhoneNumbers(): List<String> {

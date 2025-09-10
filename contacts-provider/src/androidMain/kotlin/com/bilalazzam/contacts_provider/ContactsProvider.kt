@@ -3,9 +3,10 @@ package com.bilalazzam.contacts_provider
 import android.content.Context
 import android.provider.ContactsContract
 
-
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class ContactsProvider(private val context: Context) {
+    private val contactsCache: ContactsCache = ContactsCache(context)
+
     actual suspend fun getAllContacts(): List<Contact> {
         val contacts = mutableListOf<Contact>()
         val resolver = context.contentResolver
@@ -67,6 +68,14 @@ actual class ContactsProvider(private val context: Context) {
                 )
             }
         }
+
+        // Save contacts to cache after successful fetch
+        contactsCache.saveContacts(contacts)
+
         return contacts
+    }
+
+    actual fun getCachedContacts(): List<Contact> {
+        return contactsCache.getContacts()
     }
 }

@@ -47,7 +47,6 @@ kotlin {
             api(libs.moko.permissions.compose)
 
             implementation(libs.coil.compose)
-            implementation(libs.kotlinx.datetime)
 
         }
         commonTest.dependencies {

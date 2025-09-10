@@ -10,15 +10,10 @@
     <key>NSContactsUsageDescription</key>
     <string>We need access to your contacts.</string>
 
-    <!-- Background fetch / BGTaskScheduler -->
     <key>BGTaskSchedulerPermittedIdentifiers</key>
     <array>
-        <string>com.bilalazzam.mycontacts.contactsSync</string>
+        <string>contacts_sync_task</string>
     </array>
-    <key>UIBackgroundModes</key>
-    <array>
-        <string>fetch</string>
-        <string>processing</string>
-    </array>
+
 </dict>
 </plist>

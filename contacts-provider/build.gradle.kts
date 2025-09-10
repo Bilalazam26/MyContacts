@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     id("maven-publish")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
+
 }
 
 kotlin {
@@ -46,6 +48,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
                 implementation(libs.kotlin.stdlib)
                 implementation(compose.ui)
             }

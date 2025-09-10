@@ -1,8 +1,10 @@
 package com.bilalazzam.contacts_provider
 
 import androidx.compose.ui.graphics.ImageBitmap
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class Contact(
     val id: String?,
     val firstName: String?,
@@ -33,9 +35,14 @@ data class Contact(
         get() = phoneNumbers.isNotEmpty()
 }
 
+@Serializable
 sealed class ContactAvatar {
+    @Serializable
     data class AvatarUri(val uri: String): ContactAvatar()
-    data class AvatarBitmap(val bitmap: ImageBitmap): ContactAvatar()
-    data object None: ContactAvatar()
 
+    @Serializable
+    data class AvatarBitmap(@Contextual val bitmap: ImageBitmap): ContactAvatar()
+
+    @Serializable
+    data object None: ContactAvatar()
 }
